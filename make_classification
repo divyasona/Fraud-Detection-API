@@ -1,0 +1,17 @@
+from sklearn.datasets import make_classification
+import numpy as np
+
+def generate_synthetic_data(n_samples=100):
+    """Generate synthetic transaction data"""
+    X, _ = make_classification(n_samples=n_samples, n_features=5, random_state=42)
+    synthetic_data = pd.DataFrame(X, columns=['feature1', 'feature2', 'feature3', 'feature4', 'feature5'])
+    synthetic_data['transaction_id'] = np.arange(len(synthetic_data)) + 10000
+    synthetic_data['customer_id'] = np.random.randint(1000, 5000, size=n_samples)
+    synthetic_data['amount'] = np.random.uniform(100, 10000, size=n_samples)
+    synthetic_data['transaction_type'] = np.random.choice(['debit', 'credit'], n_samples)
+    return synthetic_data
+
+@app.get("/generate-synthetic-data")
+def synthetic_data():
+    synthetic = generate_synthetic_data()
+    return synthetic.to_dict(orient="records")
